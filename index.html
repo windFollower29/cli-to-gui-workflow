@@ -3,17 +3,54 @@
   <head>
     <meta charset="UTF-8">
     <title>Hello World!</title>
+
+    <link rel="stylesheet" href="./css/index.css">
+
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <!-- <h1>Hello World!</h1> -->
     <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
+    <!-- We are using Node.js <script>document.write(process.versions.node)</script>,
     Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    and Electron <script>document.write(process.versions.electron)</script>. -->
+
+    <div>
+      <div id="drop-zone" class="drop-zone">
+        please drop 'package.json' here !
+      </div>
+    </div>
+
+    <div id="cmd-list" class="cmd-list"></div>
+
+    <!-- <div id="log" class="log"></div> -->
+
+    <!-- <fieldset id="console-log-div"></fieldset> -->
+    <div id="console-log-div"></div>
 
     <script>
       // You can also require other files to run in this process
       require('./renderer.js')
     </script>
+    <!-- <script src="./dist/js/index.js"></script> -->
+    <script src="./js/index.js"></script>
+
+    <!-- <script src="https://rawgit.com/bahmutov/console-log-div/master/console-log-div.js"></script> -->
+    
+    <!-- <script>
+      window.addEventListener('load', () => {
+console.log('--')
+        document.body.ondrop = (e) => {
+          console.log('drop', e, event.dataTransfer.files.length)
+          e.preventDefault()
+          
+          // ipcRenderer.send('ondragstart', '/path/to/item')
+        }
+
+        document.body.ondragover = e => {
+          // console.log(e, '+++++++')
+          e.preventDefault()
+        }
+      })
+    </script> -->
   </body>
 </html>
