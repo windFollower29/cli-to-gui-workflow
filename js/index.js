@@ -141,7 +141,7 @@ class Index {
 
       const { ext } = path.parse(file)
       if (ext !== '.json') {
-        // console.log(ext)
+
         return
       }
 
