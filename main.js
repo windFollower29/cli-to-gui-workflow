@@ -8,7 +8,7 @@ const { ipcMain } = require('electron')
 let mainWindow
 
 ipcMain.on('test', (e, arg) => {
-  // console.log('main', e)
+  console.log('main', e)
   e.returnValue = 'world'
 })
 
