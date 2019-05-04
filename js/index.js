@@ -5,6 +5,11 @@ const path = require('path')
 const spwan = require('child_process').spawn
 const exec = require('child_process').exec
 
+const Terminal = require('xterm').Terminal
+// const attach = require('../node_modules/xterm/lib/addons/attach/attach').attach
+// import * as attach from 'xterm/lib/addons/attach/attach'
+const pty = require('node-pty')
+
 const { ipcRenderer } = require('electron')
 
 const osascript = require('node-osascript')
@@ -95,9 +100,9 @@ class Index {
     
     const c = `ttab -a iTerm2 'cd ${dir}; npm run ${cmd}'`
     
-    const p = exec(c)
+    // const p = exec(c)
 
-    window.localStorage.setItem('test', c)
+    // window.localStorage.setItem('test', c)
     
 
     // osascript.execute(c, function(err, result, raw){
@@ -118,6 +123,38 @@ class Index {
     //   console.log(`子进程退出码：${code}`);
     //   console.log('p', p)
     // });
+
+    this.createTerminal()
+    this.createPty()
+  }
+
+  createTerminal () {
+    // Terminal.applyAddon(attach)
+
+    const term = new Terminal();
+    term.open(document.getElementById('terminal'));
+    term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+
+  }
+
+  createPty () {
+    var shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
+ 
+    var ptyProcess = pty.spawn(shell, [], {
+      name: 'xterm-color',
+      cols: 80,
+      rows: 30,
+      cwd: process.env.HOME,
+      env: process.env
+    });
+    
+    ptyProcess.on('data', function(data) {
+      process.stdout.write(data);
+    });
+    
+    ptyProcess.write('ls\r');
+    ptyProcess.resize(100, 40);
+    ptyProcess.write('ls\r');
   }
 
   logOnPage () {
