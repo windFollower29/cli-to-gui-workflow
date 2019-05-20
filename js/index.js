@@ -5,6 +5,8 @@ const path = require('path')
 const spwan = require('child_process').spawn
 const exec = require('child_process').exec
 
+const os = require('os')
+
 const Terminal = require('xterm').Terminal
 // const attach = require('../node_modules/xterm/lib/addons/attach/attach').attach
 // import * as attach from 'xterm/lib/addons/attach/attach'
@@ -14,11 +16,18 @@ const { ipcRenderer } = require('electron')
 
 const osascript = require('node-osascript')
 
+
+// const Xterm = require('electron').remote.require('./../js/terminal.js')
+const Xterm = require(path.resolve(__dirname, 'js/terminal.js'))
+
+
 class Index {
 
   constructor () {
 
     this.files = []
+
+    this.xterm = null
 
     this.elDropZone = null
     this.elCmdList = null
@@ -56,6 +65,16 @@ class Index {
       this.elDropZone.addEventListener('drop', e => {
         e.preventDefault()
 
+        console.log(e.dataTransfer.files)
+        const { dir } = path.parse(e.dataTransfer.files[0].path)
+
+        // this.xterm = this.createTerminal(dir)
+        // this.xterm.element.focus()
+        // this.emitKeyEvent('Enter', 13)
+        this.xterm = new Xterm(dir)
+        console.log(this.xterm)
+        // this.xterm.open()
+
         for (let file of e.dataTransfer.files) {
           // console.log(file)
           this.parseFile(file.path)
@@ -86,75 +105,73 @@ class Index {
     const dir = el.getAttribute('dir')
     const cmd = el.getAttribute('cmd')
 
-    // const p = spwan('npm', ['run', cmd], {
-    //   cwd: dir
+    // this.xterm.write(`npm run ${cmd}`)
+    // this.xterm.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+    // this.xterm.textarea.value = `hello world !`
+    // this.xterm.writeln('Hello World!')
+    // this.xterm.emit('data')
+
+    // this.xterm.element.focus()
+    this.xterm.emit('data', `npm run ${cmd}\n`)
+    // const e = new KeyboardEvent('keyup', {
+    //   key: 'Enter',
+    //   code: 'Enter',
+    //   charCode: 13
     // })
-    // const c = `osascript -e 'tell application "iTerm" to do script "cd ${dir} && npm run ${cmd}"'
-    // `
-
-    // const c = `osascript -e 'tell application "iTerm" to activate' -e 'tell application "iTerm" to do script "npm run ${cmd}"'`
-    // const c = `osascript -e 'tell application "iTerm" to activate' -e 'delay 5' -e 'tell application "iTerm" to do script "ls"'`
-
-    
-    // const p = spwan('open', [ '-a', 'iTerm', dir ])
-    
-    const c = `ttab -a iTerm2 'cd ${dir}; npm run ${cmd}'`
-    
-    // const p = exec(c)
-
-    // window.localStorage.setItem('test', c)
-    
-
-    // osascript.execute(c, function(err, result, raw){
-    //   if (err) return console.error(err)
-    //   console.log('1', result, raw)
-
-    // })
-
-    // p.stdout.on('data', (data) => {
-    //   console.log(`stdout: ${data}`);
-    // });
-    
-    // p.stderr.on('data', (data) => {
-    //   console.log(`stderr: ${data}`);
-    // });
-    
-    // p.on('close', (code) => {
-    //   console.log(`子进程退出码：${code}`);
-    //   console.log('p', p)
-    // });
-
-    this.createTerminal()
-    this.createPty()
-  }
-
-  createTerminal () {
-    // Terminal.applyAddon(attach)
-
-    const term = new Terminal();
-    term.open(document.getElementById('terminal'));
-    term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+    // console.log('e', e)
+    // this.xterm.emit('key', e)
 
   }
 
-  createPty () {
-    var shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
+  emitKeyEvent (key, charCode) {
+    const e = new KeyboardEvent('keyup', {
+      key,
+      charCode
+    })
+
+    console.log('e', e)
+
+    this.xterm.emit('key', e)
+  }
+
+  createTerminal (dir) {
+    const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL']
  
-    var ptyProcess = pty.spawn(shell, [], {
+    const ptyProcess = pty.spawn(shell, [], {
       name: 'xterm-color',
       cols: 80,
       rows: 30,
-      cwd: process.env.HOME,
+      cwd: dir,
       env: process.env
-    });
+    })
+
+    // ptyProcess._defer((f) => {
+    //   console.log('_defer', f)
+    // })
+
+    const xterm = new Terminal();
+    xterm.open(document.getElementById('terminal'));
+    xterm.emit('focus')
+        
+    xterm.on('data', function(data) {
+      console.log(data)
+      ptyProcess.write(data);
+    })
+    console.log(xterm.textarea)
+
+
     
-    ptyProcess.on('data', function(data) {
-      process.stdout.write(data);
-    });
-    
-    ptyProcess.write('ls\r');
-    ptyProcess.resize(100, 40);
-    ptyProcess.write('ls\r');
+    ptyProcess.on('data', data => {
+      xterm.write(data)
+    })
+
+    console.log(xterm)
+    return xterm
+
+  }
+
+  createPty (xterm) {
+
   }
 
   logOnPage () {
