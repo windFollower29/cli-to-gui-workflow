@@ -144,8 +144,12 @@ export default class Main extends Component {
   }
 
   runScript (action) {
-    // console.log(action, action.xterm)
-    action.xterm.emit('data', `npm run ${action.label}\n`)
+    // action.xterm.emit('data', `npm run ${action.label}\n`)
+    const _project = this.getCurrentProject()
+
+    const xterm = _project.xterms.find(x => x.id === _project.showTaskId)
+
+    xterm.xterm.emit('data', `npm run ${action.label}\n`)
   }
 
   getCurrentProject () {
@@ -219,7 +223,6 @@ export default class Main extends Component {
         id: generate(),
         label: key,
         script: scripts[key],
-        xterm: xterm.xterm
       }))
   
       const _project = projectModel(uuid, actions, xterms, dir, taskId)
