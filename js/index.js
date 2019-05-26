@@ -1,6 +1,7 @@
 
 const fs = require('fs')
 const path = require('path')
+console.log(path)
 
 const spwan = require('child_process').spawn
 const exec = require('child_process').exec
@@ -68,12 +69,11 @@ class Index {
         console.log(e.dataTransfer.files)
         const { dir } = path.parse(e.dataTransfer.files[0].path)
 
-        // this.xterm = this.createTerminal(dir)
+        this.xterm = this.createTerminal(dir)
         // this.xterm.element.focus()
         // this.emitKeyEvent('Enter', 13)
-        this.xterm = new Xterm(dir)
-        console.log(this.xterm)
-        // this.xterm.open()
+        // this.xterm = new Xterm(dir)
+        // console.log(this.xterm)
 
         for (let file of e.dataTransfer.files) {
           // console.log(file)

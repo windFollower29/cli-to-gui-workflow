@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+html, body, #root, .App{
+  box-sizing: border-box;
+  height: 100%;
+}
