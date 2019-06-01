@@ -1,5 +1,8 @@
 import React from 'react';
-import logo from './logo.svg';
+
+import { Provider } from 'react-redux'
+import store from './store/index'
+
 import './App.css';
 import './style/page.styl'
 
@@ -7,13 +10,16 @@ import Layout from './pages/Layout'
 
 function App() {
   return (
-    <div className="App">
 
-      <Layout
+    <Provider store={store} >
 
-      />
+      <div className="App">
 
-    </div>
+        <Layout/>
+
+      </div>
+      
+    </Provider>
   );
 }
 

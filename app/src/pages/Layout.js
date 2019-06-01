@@ -14,7 +14,8 @@ const os = window.require('os')
 
 const projectModel = (id, name) => ({
   id,
-  name
+  name,
+  isEdit: true
 })
 
 export default class Layout extends Component {
@@ -113,6 +114,7 @@ export default class Layout extends Component {
       this.updateSidebar(uuid)
   
       this.mainRef.addProject(file, uuid)
+
     })
 
   }

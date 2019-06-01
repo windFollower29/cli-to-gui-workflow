@@ -14,6 +14,14 @@ import Action from './Actions'
 const fs = window.require('fs')
 const path = window.require('path')
 
+/**
+ * 
+ * @param {String} id identification of project
+ * @param {Array} actions scripts in package.json
+ * @param {Array} xterms Array of instances of xterm
+ * @param {String} cwd root path of the project, as well as, default path of teminal
+ * @param {String} showTaskId id of the active terminal
+ */
 const projectModel = (id, actions, xterms, cwd, showTaskId) => ({
   id,
   actions,
@@ -26,7 +34,6 @@ export default class Main extends Component {
 
   state = {
     projects: [],
-    // showTaskId: ''
   }
 
   constructor (props) {
@@ -41,7 +48,6 @@ export default class Main extends Component {
 
     const {
       projects,
-      // showTaskId
     } = this.state
 
     const {
@@ -116,6 +122,15 @@ export default class Main extends Component {
     
     this.initEvent()
 
+  }
+
+  componentWillReceiveProps (props, old) {
+
+    console.log('componentWillReceiveProps', props.showId, old.showId)
+
+    const p = this.state.projects.find(p => p.id === props.showId)
+
+    !p && this.addProject()
   }
 
   componentDidUpdate () {
@@ -242,6 +257,9 @@ export default class Main extends Component {
         xterm.xterm.fit()
         xterm.initEvent()
 
+        // 存储到浏览器
+        this.saveStorage(arr)
+
       })
 
     })
@@ -259,5 +277,9 @@ export default class Main extends Component {
     const topHeight = activeWorkSpaceDom[0].querySelector('.action-list').getClientRects()[0].height
     
     xtermListDom.style.height = dropZoneHeight - topHeight + 'px'
+  }
+
+  saveStorage (arr) {
+    window.localStorage.setItem('projects', JSON.stringify(arr))
   }
 }

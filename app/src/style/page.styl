@@ -73,9 +73,45 @@
     // transform: translate(-50%, -50%)
 
 .sidebar
+  font-size: 0
   background: hsla(0,0%,100%,.3)
-  .project
-    padding: 6px 10px
+  overflow-x: hidden
 
-    &.active
-      box-shadow: 0 0 10px 10px inset rgba(0,0,0,.5)
+  .project
+    width 115px
+    height 34px
+    color: #ddd
+    font-size: 0
+    // padding: 6px 10px
+    background-color: rgba(59, 59, 59, 0.5)
+    transition: all ease-in-out .3s
+
+    span
+      display: inline-block
+      width: 100px
+      font-size: 16px
+      padding: 6px 0 6px
+      text-align: center
+      vertical-align: middle
+
+      &.active
+        // box-shadow: 0 0 10px 10px inset rgba(0,0,0,.5)
+    input
+      display: inline-block
+      width: 100px
+      font-size: 16px
+      border: none
+
+
+    .remove
+      display: inline-block;
+      width: 15px;
+      height 34px
+      line-height 34px
+      color: #fff
+      font-size: 16px
+      text-align: center
+      vertical-align: middle
+      text-decoration: none
+      background-color: rgba(255, 0, 0, .4)
+      transition: all ease-in-out .3s
