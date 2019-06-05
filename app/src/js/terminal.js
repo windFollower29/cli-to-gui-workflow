@@ -88,7 +88,7 @@ export default class Xterm {
 
     this.xterm.on('key', (key, e) => {
 
-      console.log('key', key, e)
+      // console.log('key', key, e)
 
       if (key.charCode == 13) {
 

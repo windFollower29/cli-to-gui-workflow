@@ -1,10 +1,29 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { switchProject, delProject } from '../store/actions/project'
 
 import classNames from 'classnames'
 import styles from './styles/sidebar.module.styl'
 import './styles/sidebar.styl'
 
-export default class Sidebar extends Component {
+@connect(
+  state => ({
+    projects: state.project.projects,
+    showId: state.project.activeId
+  }),
+  dispatch => ({
+    switchProject: (project) => dispatch(switchProject(project)),
+    delProject: id => dispatch(delProject(id))
+  })
+)
+class Sidebar extends Component {
+
+  constructor (props) {
+    super(props)
+
+    this.timer = null
+    this.isDbc = false
+  }
 
   render () {
 
@@ -18,20 +37,23 @@ export default class Sidebar extends Component {
         isEdit,
         name
       } = project
+      // console.log('isEdit', isEdit)
 
       if (isEdit) {
 
         return (
           <input type="text"
-            // onBlur={this.saveInput.bind(project)}
-            onKeyPress={this.saveInput.bind(project)}
+            onClick={this.clickInput}
+            onBlur={this.saveInput.bind(this, project)}
+            onKeyPress={this.onKeyPress.bind(this, project)}
+            // onChange
           />
         )
       }
 
       return (
         <span
-          onDoubleClick={this.toInput}
+          onDoubleClick={this.toInput.bind(this, project)}
         >
           {project.name}
         </span>
@@ -50,7 +72,7 @@ export default class Sidebar extends Component {
               className={
                 classNames('project', showId === project.id && 'active')
               }
-              key={project.name}
+              key={project.id}
               onClick={this.switchTab.bind(this, project)}
             >
               <ProjectItem project={project} />
@@ -66,24 +88,69 @@ export default class Sidebar extends Component {
     )
   }
 
+  getSnapshotBeforeUpdate (prevProps, prevState) {
+    // console.log('componentWillUpdate', prevProps, prevState)
+    return 'test'
+  }
+
+  componentDidUpdate (prevProps, prevState, snapshot) {
+    // console.log('componentDidUpdate', prevProps, prevState, snapshot)
+  }
+
   switchTab = project => {
-    this.props.switchTab(project)
+    // this.props.switchTab(project)
+
+    this.timer && clearTimeout(this.timer)
+
+    this.timer = setTimeout(() => {
+      if (this.isDbc) {
+        this.isDbc = false
+      } else {
+        // console.log('click')
+        // console.log('switchTab')
+        this.props.switchProject(project)
+      }
+    }, 300)
   }
 
   remove (project, e) {
     e.stopPropagation()
-    console.log('remove')
+    // console.log('remove')
+    this.props.delProject(project.id)
   }
 
-  toInput = e => {
-    e.stopPropagation()
-
-
+  toInput = (project, e) => {
+    // console.log(project, e)
+    // e.stopPropagation()
+    this.isDbc = true
+    // this.props.updateProject({
+    //   name: e.target.value,
+    //   isEdit: true
+    // })
   }
 
   saveInput = (project, e) => {
     e.stopPropagation()
 
-    // project.isEdit = false
+    // this.props.updateProject({
+    //   name: e.target.value,
+    //   isEdit: false
+    // })
+  }
+
+  onKeyPress (project, e) {
+    // e.stopPropagation()
+
+    if (e.which === 13) {
+      this.saveInput(project, e)
+    }
+  }
+
+  clickInput = e => {
+    e.stopPropagation()
+
+    
   }
 }
+
+export default Sidebar

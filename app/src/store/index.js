@@ -6,7 +6,11 @@ import rootReducers from './reducers/index'
 
 const middlewares = [ thunk ]
 
-export default createStore(
+const store = createStore(
   rootReducers,
   applyMiddleware(...middlewares)
 )
+
+window.store = store
+
+export default store

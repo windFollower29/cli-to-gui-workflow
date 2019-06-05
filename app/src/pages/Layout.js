@@ -2,6 +2,8 @@
 
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
+import { addProject } from '../store/actions/project'
 
 import { generate } from 'shortid'
 
@@ -18,29 +20,61 @@ const projectModel = (id, name) => ({
   isEdit: true
 })
 
-export default class Layout extends Component {
+@connect(
+  state => ({
+    projects: state.project.projects
+  }),
+  dispatch => ({
+    addProject: (jsonFile) => dispatch(addProject(jsonFile))
+  })
+)
+class Layout extends Component {
 
   state = {
 
     isFileOver: false,
     showId: undefined,
-    projects: [],
+    // projects: [
+    //   // {
+    //   //   id: 2,
+    //   //   name: '吸猫1',
+    //   //   isEdit: false
+    //   // }
+    // ],
   }
 
   constructor (props) {
 
     super(props)
+    console.log(props)
 
-    this.mainRef = null
+    // this.mainRef = null
+    this.mainRef = React.createRef()
   }
+
+  // updateProject (obj) {
+  //   this.setState({
+  //     projects: [
+  //       {
+  //         id: 2,
+  //         name: obj.name,
+  //         isEdit: obj.isEdit
+  //       }
+  //     ]
+  //   })
+  // }
 
   render () {
 
     const {
-      projects,
+      // projects,
       isFileOver,
       showId
     } = this.state
+
+    const {
+      projects
+    } = this.props
 
     return (
 
@@ -48,13 +82,14 @@ export default class Layout extends Component {
 
         <Sidebar
           showId={showId}
-          projects={projects}
+          // projects={projects}
           switchTab={this.switchTab.bind(this)}
+          // updateProject={this.updateProject.bind(this)}
         />
 
         <Main
           showId={showId}
-          ref={el => this.mainRef = el}
+          ref={this.mainRef}
           showUploadMask={isFileOver}
         />
       </div>
@@ -63,8 +98,6 @@ export default class Layout extends Component {
 
   componentDidMount () {
 
-    console.log(process, os, os.platform())
-
     this.initEvent()
   }
 
@@ -72,7 +105,7 @@ export default class Layout extends Component {
 
     let counter = 0
 
-    const mainDom = ReactDOM.findDOMNode(this.mainRef)
+    const mainDom = ReactDOM.findDOMNode(this.mainRef.current)
     
     mainDom.addEventListener('dragenter', e => {
       e.preventDefault()
@@ -107,15 +140,17 @@ export default class Layout extends Component {
       return alert('请选择.json文件')
     }
 
-    const uuid = generate()
-    
-    this.setState({ showId: uuid }, () => {
-      
-      this.updateSidebar(uuid)
-  
-      this.mainRef.addProject(file, uuid)
+    this.props.addProject(file)
 
-    })
+    // const uuid = generate()
+    
+    // this.setState({ showId: uuid }, () => {
+      
+    //   this.updateSidebar(uuid)
+  
+    //   this.mainRef.addProject(file, uuid)
+
+    // })
 
   }
 
@@ -133,3 +168,5 @@ export default class Layout extends Component {
     this.setState({ showId: tab.id })
   }
 }
+
+export default Layout
