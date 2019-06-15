@@ -9,6 +9,7 @@ import { generate } from 'shortid'
 
 import Sidebar from './Sidebar'
 import Main from './Main'
+import Tabs from './Tabs'
 
 const path = window.require('path')
 const fs = window.require('fs')
@@ -32,7 +33,8 @@ class Layout extends Component {
 
   state = {
 
-    isFileOver: false,
+    // isFileOver: false,
+    isFileOver: !this.props.projects.length,
     showId: undefined,
     // projects: [
     //   // {
@@ -46,7 +48,7 @@ class Layout extends Component {
   constructor (props) {
 
     super(props)
-    console.log(props)
+    // console.log(props)
 
     // this.mainRef = null
     this.mainRef = React.createRef()
@@ -78,7 +80,7 @@ class Layout extends Component {
 
     return (
 
-      <div>
+      <div className="wrapper">
 
         <Sidebar
           showId={showId}
@@ -92,6 +94,9 @@ class Layout extends Component {
           ref={this.mainRef}
           showUploadMask={isFileOver}
         />
+
+        <Tabs />
+
       </div>
     )
   }
@@ -164,7 +169,7 @@ class Layout extends Component {
   }
 
   switchTab (tab) {
-    console.log(tab)
+    // console.log(tab)
     this.setState({ showId: tab.id })
   }
 }

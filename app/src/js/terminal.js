@@ -30,7 +30,7 @@ export default class Xterm {
   createTerminal () {
 
     const shell = Xterm.shell
-    console.log(shell)
+    // console.log(shell)
 
     this.ptyProcess = pty.spawn(shell, [], this.opts)
     this.xterm = new Terminal({
@@ -78,11 +78,11 @@ export default class Xterm {
 
 
     this.xterm.on('focus', () => {
-      console.log('focus')
+      // console.log('focus')
     })
 
     this.xterm.textarea.onkeypress = function (e) {
-      console.log('press', String.fromCharCode(e.keyCode))
+      // console.log('press', String.fromCharCode(e.keyCode))
       // term.write(String.fromCharCode(e.keyCode))
     }
 
@@ -110,6 +110,7 @@ export default class Xterm {
   }
 
   static get shell () {
+    // return window.process.env[os.platform() === 'win32' ? 'COMSPEC' : 'bash']
     return window.process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL']
   }
 }

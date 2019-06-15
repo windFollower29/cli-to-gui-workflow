@@ -1,4 +1,7 @@
 
+import { REHYDRATE } from 'redux-persist/lib/constants'
+
+
 import * as types from '../action-types'
 
 const initState = {
@@ -10,8 +13,18 @@ const initState = {
 }
 
 const project = (state = initState, action) => {
+  // console.log('reducer', action.type, state.payload)
 
   switch (action.type) {
+
+    case types.initProject:
+      return {
+        ...state,
+        projects: action.projects,
+        activeId: action.activeId,
+        activeXterm: action.activeXterm,
+        isNew: true
+      }
 
     case types.addProject:
       return {
@@ -65,6 +78,25 @@ const project = (state = initState, action) => {
         activeXterm: action.xtermModel,
         isNew: false
       }
+
+    case types.delXterm:
+
+      return {
+        ...state,
+        projects: action.projects
+      }
+
+    case types.rename:
+    case types.enableEdit:
+      // console.log('---')
+      return {
+        ...state,
+        projects: action.projects
+      }
+
+    case REHYDRATE:
+      // console.log('REHYDRATE', action.payload, state)
+      return state
 
     default:
       return { ...state }

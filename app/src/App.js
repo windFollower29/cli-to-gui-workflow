@@ -3,6 +3,9 @@ import React from 'react';
 import { Provider } from 'react-redux'
 import store from './store/index'
 
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor } from './store/index'
+
 import './App.css';
 import './style/page.styl'
 
@@ -12,13 +15,16 @@ function App() {
   return (
 
     <Provider store={store} >
+      <PersistGate
+        loading={null}
+        persistor={persistor}
+      >
+        <div className="App">
 
-      <div className="App">
+          <Layout/>
 
-        <Layout/>
-
-      </div>
-      
+        </div>
+      </PersistGate>
     </Provider>
   );
 }

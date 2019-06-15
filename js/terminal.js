@@ -47,17 +47,17 @@ module.exports = class Xterm {
 
 
     this.xterm.on('focus', () => {
-      console.log('focus')
+      // console.log('focus')
     })
 
     this.xterm.textarea.onkeypress = function (e) {
-      console.log('press', String.fromCharCode(e.keyCode))
+      // console.log('press', String.fromCharCode(e.keyCode))
       // term.write(String.fromCharCode(e.keyCode))
     }
 
     this.xterm.on('key', (key, e) => {
 
-      console.log('key', key, e)
+      // console.log('key', key, e)
 
       if (key.charCode == 13) {
 

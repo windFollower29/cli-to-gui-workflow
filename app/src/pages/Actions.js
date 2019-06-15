@@ -15,14 +15,15 @@ export default class Actions extends Component {
       <div className="action-list">
         {
           actions.map(action => (
-            <button
+            <a
+              href="javascript:"
               key={action.label}
               className="action"
               script={action.script}
               onClick={this.runScript.bind(this, action)}
             >
               {action.label}
-            </button>
+            </a>
           ))
         }
       </div>

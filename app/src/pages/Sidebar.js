@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { switchProject, delProject } from '../store/actions/project'
+import {
+  asyncLoad,
+  initProject,
+  switchProject,
+  delProject,
+  rename,
+  enableEdit
+} from '../store/actions/project'
 
 import classNames from 'classnames'
 import styles from './styles/sidebar.module.styl'
@@ -12,8 +19,12 @@ import './styles/sidebar.styl'
     showId: state.project.activeId
   }),
   dispatch => ({
+    asyncLoad: project => dispatch(asyncLoad(project)),
+    initProject: project => dispatch(initProject(project)),
     switchProject: (project) => dispatch(switchProject(project)),
-    delProject: id => dispatch(delProject(id))
+    delProject: id => dispatch(delProject(id)),
+    rename: (pid, name) => dispatch(rename(pid, name)),
+    enableEdit: (pid) => dispatch(enableEdit(pid))
   })
 )
 class Sidebar extends Component {
@@ -34,28 +45,30 @@ class Sidebar extends Component {
 
     const ProjectItem = ({project}) => {
       const {
-        isEdit,
+        isNameEdit,
         name
       } = project
-      // console.log('isEdit', isEdit)
+      // console.log('isNameEdit', isNameEdit)
 
-      if (isEdit) {
+      if (isNameEdit) {
 
         return (
           <input type="text"
+            autoFocus
             onClick={this.clickInput}
             onBlur={this.saveInput.bind(this, project)}
             onKeyPress={this.onKeyPress.bind(this, project)}
-            // onChange
+            placeholder={name}
           />
         )
       }
 
       return (
         <span
+          test={project.id}
           onDoubleClick={this.toInput.bind(this, project)}
         >
-          {project.name}
+          {name}
         </span>
       )
     }
@@ -72,7 +85,7 @@ class Sidebar extends Component {
               className={
                 classNames('project', showId === project.id && 'active')
               }
-              key={project.id}
+              key={project.id || project.cwd}
               onClick={this.switchTab.bind(this, project)}
             >
               <ProjectItem project={project} />
@@ -108,7 +121,10 @@ class Sidebar extends Component {
       } else {
         // console.log('click')
         // console.log('switchTab')
-        this.props.switchProject(project)
+        project.xterms
+          ? this.props.switchProject(project)
+          // : this.props.asyncLoad(project)
+          : this.props.initProject(project)
       }
     }, 300)
   }
@@ -120,22 +136,16 @@ class Sidebar extends Component {
   }
 
   toInput = (project, e) => {
-    // console.log(project, e)
-    // e.stopPropagation()
+    e.stopPropagation()
+
     this.isDbc = true
-    // this.props.updateProject({
-    //   name: e.target.value,
-    //   isEdit: true
-    // })
+    this.props.enableEdit(project.id)
   }
 
   saveInput = (project, e) => {
     e.stopPropagation()
 
-    // this.props.updateProject({
-    //   name: e.target.value,
-    //   isEdit: false
-    // })
+    this.props.rename(project.id, e.target.value)
   }
 
   onKeyPress (project, e) {

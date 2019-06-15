@@ -16,9 +16,10 @@ const path = window.require('path')
  * @param {String} cwd root path of the project, as well as, default path of teminal
  * @param {String} activeXtermId id of the active terminal
  */
-const projectModel = (name, actions, xterms, cwd, activeXtermId) => ({
-  id: generate(),
+const projectModel = (name, actions, xterms, cwd, activeXtermId, id) => ({
+  id: id || generate(),
   name,
+  isNameEdit: false,
   actions,
   xterms,
   cwd,
@@ -33,6 +34,49 @@ const xtermModel = (id, cwd) => {
     id,
     cwd,
     xterm
+  }
+}
+
+export const initProject = (project, data) => {
+
+  var data = data || fs.readFileSync(path.join(project.cwd, 'package.json'), 'utf8')
+  
+  const scripts = JSON.parse(data).scripts
+
+  const actions = Object.keys(scripts).map(key => ({
+    id: generate(),
+    label: key,
+    script: scripts[key]
+  }))
+
+  const id = generate()
+  const xterms = [
+    xtermModel(id, project.cwd)
+  ]
+
+  const _project = projectModel(project.name, actions, xterms, project.cwd, id, project.id)
+
+  const projects = store.getState().project.projects
+  const _projects = [ ...projects ]
+  const idx = projects.findIndex(p => p.id === project.id)
+  _projects.splice(idx, 1, _project)
+
+  return {
+    type: types.initProject,
+    projects: _projects,
+    activeId: project.id,
+    activeXterm: xterms[0]
+  }
+}
+
+export const asyncLoad = project => {
+
+  return dispatch => {
+
+    fs.readFile(path.join(project.cwd, 'package.json'), 'utf8', (err, data) => {
+  
+      dispatch(initProject(project, data))
+    })
   }
 }
 
@@ -127,4 +171,59 @@ export const switchXterm = (id) => {
     type: types.switchXterm,
     xtermModel
   }
+}
+
+export const delXterm = id => {
+
+  const _projects = [ ...store.getState().project.projects ]
+  const activeId = store.getState().project.activeId
+
+  const p = _projects.find(p => p.id === activeId)
+  const idx = p.xterms.findIndex(x => x.id === id)
+  // 记录当前project启用中的xterm，方便切换project时恢复
+  p.activeXtermId = undefined
+  p.xterms.splice(idx, 1)
+
+  return {
+    type: types.delXterm,
+    projects: _projects
+  }
+}
+
+export const rename = (pid, name) => {
+
+  const {
+    projects
+  } = store.getState().project
+
+  const idx = projects.findIndex(p => p.id === pid)
+
+  const _projects = [ ...projects ]
+
+  _projects[idx].name = name || _projects[idx].name
+  _projects[idx].isNameEdit = false
+
+  return {
+    type: 'rename',
+    projects: _projects
+  }
+}
+
+export const enableEdit = (pid) => {
+
+  const {
+    projects
+  } = store.getState().project
+
+  const idx = projects.findIndex(p => p.id === pid)
+
+  const _projects = [ ...projects ]
+
+  _projects[idx].isNameEdit = true
+
+  return {
+    type: 'enableEdit',
+    projects: _projects
+  }
+
 }
