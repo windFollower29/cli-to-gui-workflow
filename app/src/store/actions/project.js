@@ -15,6 +15,7 @@ const path = window.require('path')
  * @param {Array} xterms Array of instances of xterm
  * @param {String} cwd root path of the project, as well as, default path of teminal
  * @param {String} activeXtermId id of the active terminal
+ * @param {String} id id of the project
  */
 const projectModel = (name, actions, xterms, cwd, activeXtermId, id) => ({
   id: id || generate(),
@@ -37,17 +38,35 @@ const xtermModel = (id, cwd) => {
   }
 }
 
+const getActions = data => {
+
+  try {
+
+    const scripts = JSON.parse(data).scripts
+    const actions = Object.keys(scripts).map(key => ({
+      id: generate(),
+      label: key,
+      script: scripts[key]
+    }))
+    return actions
+
+  } catch (err) {
+    return []
+  }
+}
+
 export const initProject = (project, data) => {
 
   var data = data || fs.readFileSync(path.join(project.cwd, 'package.json'), 'utf8')
   
-  const scripts = JSON.parse(data).scripts
+  // const scripts = JSON.parse(data).scripts
 
-  const actions = Object.keys(scripts).map(key => ({
-    id: generate(),
-    label: key,
-    script: scripts[key]
-  }))
+  // const actions = Object.keys(scripts).map(key => ({
+  //   id: generate(),
+  //   label: key,
+  //   script: scripts[key]
+  // }))
+  const actions = getActions(data)
 
   const id = generate()
   const xterms = [
@@ -87,16 +106,16 @@ export const addProject = (jsonFile) => {
   const { dir: cwd } = path.parse(jsonFile)
   const data = fs.readFileSync(jsonFile, 'utf8')
   // scripts of 'package.json' file
-  const scripts = JSON.parse(data).scripts
-  const actions = Object.keys(scripts).map(key => ({
-    id: generate(),
-    label: key,
-    script: scripts[key]
-  }))
+  // const scripts = JSON.parse(data).scripts
+  // const actions = Object.keys(scripts).map(key => ({
+  //   id: generate(),
+  //   label: key,
+  //   script: scripts[key]
+  // }))
+  const actions = getActions(data)
 
   // list of instances of xterm
   const id = generate()
-  
   const xterms = [
     xtermModel(id, cwd)
   ]

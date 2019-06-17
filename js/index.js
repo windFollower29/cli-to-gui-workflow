@@ -1,250 +1,82 @@
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  MenuItem
+} = require('electron')
 
-const fs = require('fs')
-const path = require('path')
-console.log(path)
+const log = require('electron-log')
+module.exports = class Index {
 
-const spwan = require('child_process').spawn
-const exec = require('child_process').exec
+  constructor (win) {
 
-const os = require('os')
-
-const Terminal = require('xterm').Terminal
-// const attach = require('../node_modules/xterm/lib/addons/attach/attach').attach
-// import * as attach from 'xterm/lib/addons/attach/attach'
-const pty = require('node-pty')
-
-const { ipcRenderer } = require('electron')
-
-const osascript = require('node-osascript')
-
-
-// const Xterm = require('electron').remote.require('./../js/terminal.js')
-const Xterm = require(path.resolve(__dirname, 'js/terminal.js'))
-
-
-class Index {
-
-  constructor () {
-
-    this.files = []
-
-    this.xterm = null
-
-    this.elDropZone = null
-    this.elCmdList = null
+    this.win = win
+    this.menu = null
+    this.info = {}
 
     this.init()
   }
 
   init () {
 
-    // this.logOnPage()
-
     this.initEvent()
-
-    this.initCommunicate()
+    this.createMenu()
   }
 
-  initCommunicate () {
+  createMenu () {
 
-    const val = ipcRenderer.sendSync('test', 'hello')
-    // console.log(val)
+    const template = [
+      {
+        label: '刷新',
+        // type: 'checkbox',
+        click: this.refresh.bind(this)
+      },
+      {
+        label: '重命名',
+        // type: 'checkbox',
+        click: this.rename.bind(this)
+      },
+      {
+        label: '打开文件目录',
+        // type: 'checkbox',
+        click: this.openFileManager.bind(this)
+      }
+    ]
+    this.menu = Menu.buildFromTemplate(template)
+    // this.menu.append(new MenuItem({ label: '刷新', type: 'checkbox' }))
+    // this.menu.append(new MenuItem({ label: '重命名', type: 'checkbox' }))
+  }
+
+  refresh () {
+    console.log('refresh', this)
+    this.win.webContents.send('refresh', this.info.id)
+  }
+
+  rename () {
+    // console.log('rename', this)
+    this.win.webContents.send('rename', this.info.id)
+  }
+
+  openFileManager () {
+    this.win.webContents.send('open-file-manager', this.info.cwd)
   }
 
   initEvent () {
 
-    window.addEventListener('load', () => {
-
-      this.elDropZone = document.getElementById('drop-zone')
-      this.elCmdList = document.getElementById('cmd-list')
-
-      this.elDropZone.addEventListener('dragover', e => {
-        e.preventDefault()
-
-      }, false)
-
-      this.elDropZone.addEventListener('drop', e => {
-        e.preventDefault()
-
-        console.log(e.dataTransfer.files)
-        const { dir } = path.parse(e.dataTransfer.files[0].path)
-
-        this.xterm = this.createTerminal(dir)
-        // this.xterm.element.focus()
-        // this.emitKeyEvent('Enter', 13)
-        // this.xterm = new Xterm(dir)
-        // console.log(this.xterm)
-
-        for (let file of e.dataTransfer.files) {
-          // console.log(file)
-          this.parseFile(file.path)
-        }
-
-      }, false)
-
-      this.elCmdList.addEventListener('click', e => {
-        e.stopPropagation()
-        const el = e.target
-        // console.log(el)
-        // console.log(el.getAttribute('cmd'))
-        this.exec(el)
-      }, false)
-
-    })
-  }
-
-  createSpawn () {
-    let p = null
-
-    return () => {
-
-    }
-  }
-
-  exec (el) {
-    const dir = el.getAttribute('dir')
-    const cmd = el.getAttribute('cmd')
-
-    // this.xterm.write(`npm run ${cmd}`)
-    // this.xterm.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
-    // this.xterm.textarea.value = `hello world !`
-    // this.xterm.writeln('Hello World!')
-    // this.xterm.emit('data')
-
-    // this.xterm.element.focus()
-    this.xterm.emit('data', `npm run ${cmd}\n`)
-    // const e = new KeyboardEvent('keyup', {
-    //   key: 'Enter',
-    //   code: 'Enter',
-    //   charCode: 13
-    // })
-    // console.log('e', e)
-    // this.xterm.emit('key', e)
-
-  }
-
-  emitKeyEvent (key, charCode) {
-    const e = new KeyboardEvent('keyup', {
-      key,
-      charCode
-    })
-
-    console.log('e', e)
-
-    this.xterm.emit('key', e)
-  }
-
-  createTerminal (dir) {
-    const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL']
- 
-    const ptyProcess = pty.spawn(shell, [], {
-      name: 'xterm-color',
-      cols: 80,
-      rows: 30,
-      cwd: dir,
-      env: process.env
-    })
-
-    // ptyProcess._defer((f) => {
-    //   console.log('_defer', f)
+    // app.on('browser-window-created', (e, win) => {
+    //   win.webContents.on('context-menu', (e, params) => {
+    //     log.info('---')
+    //     this.menu.popup(win, params.x, params.y)
+    //   })
     // })
 
-    const xterm = new Terminal();
-    xterm.open(document.getElementById('terminal'));
-    xterm.emit('focus')
-        
-    xterm.on('data', function(data) {
-      console.log(data)
-      ptyProcess.write(data);
+    ipcMain.on('show-context-menu', (e, data) => {
+      // log.info(data, a, b)
+      this.info = data
+      const win = BrowserWindow.fromWebContents(e.sender)
+      // log.info(win, this.menu)
+      this.menu.popup(win)
     })
-    console.log(xterm.textarea)
-
-
-    
-    ptyProcess.on('data', data => {
-      xterm.write(data)
-    })
-
-    console.log(xterm)
-    return xterm
-
-  }
-
-  createPty (xterm) {
-
-  }
-
-  logOnPage () {
-    const old = console.log
-
-    const logger = document.getElementById('log')
-
-    console.log = (message) => {
-      if (typeof message == 'object') {
-        logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
-      } else {
-        logger.innerHTML += message + '<br />';
-      }
-    }
-  }
-
-  parseFile (file) {
-
-    fs.readFile(file, 'utf8', (err, data) => {
-      if (err) return err
-
-      const { ext } = path.parse(file)
-      if (ext !== '.json') {
-
-        return
-      }
-
-      this.files.push({
-        scripts: JSON.parse(data).scripts,
-        path: file
-      })
-      // console.log(this.files)
-      this.generateTask()
-    })
-  }
-
-  generateTask () {
-    this.files.forEach(file => {
-      this.generateList(file)
-    })
-  }
-
-  generateList (file) {
-    const btns = this.createHTML(file)
-
-    const div = document.createElement('div')
-    btns.forEach(btn => {
-      div.appendChild(btn)
-    })
-
-    this.elCmdList.appendChild(div)
-  }
-
-  createHTML (info) {
-    let arr = []
-
-    arr = Object.keys(info.scripts).map((key, idx) => {
-
-      // const key = item[idx]
-      const val = info.scripts[key]
-
-      const btn = document.createElement('button')
-      btn.textContent = key
-      btn.setAttribute('cmd', key)
-      btn.setAttribute('dir', path.parse(info.path).dir)
-
-      return btn
-
-    })
-
-    return arr
-    
   }
 }
-
-module.exports = new Index()

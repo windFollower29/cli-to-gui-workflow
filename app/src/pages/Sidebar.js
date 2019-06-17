@@ -13,6 +13,9 @@ import classNames from 'classnames'
 import styles from './styles/sidebar.module.styl'
 import './styles/sidebar.styl'
 
+const os = window.require('os')
+const { shell, ipcRenderer } = window.require('electron')
+
 @connect(
   state => ({
     projects: state.project.projects,
@@ -34,6 +37,7 @@ class Sidebar extends Component {
 
     this.timer = null
     this.isDbc = false
+    this.sidebarRef = null
   }
 
   render () {
@@ -76,6 +80,7 @@ class Sidebar extends Component {
     return (
 
       <div
+        ref={el => this.sidebarRef = el}
         className={classNames(styles.sidebar, 'sidebar')}
       >
 
@@ -110,8 +115,49 @@ class Sidebar extends Component {
     // console.log('componentDidUpdate', prevProps, prevState, snapshot)
   }
 
+  componentDidMount () {
+
+    this.initEvent()
+  }
+
+  initEvent () {
+
+    ipcRenderer.on('rename', (e, pid) => {
+      this.props.enableEdit(pid)
+    })
+
+    ipcRenderer.on('open-file-manager', (e, cwd) => {
+      shell.showItemInFolder(cwd)
+    })
+
+    this.sidebarRef.addEventListener('contextmenu', e => {
+
+      const listDom = document.querySelectorAll('.project')
+      const idx = Array.prototype.findIndex.call(listDom, dom => dom.contains(e.target))
+
+      if (idx > -1) {
+
+        const {
+          name,
+          cwd,
+          activeXtermId,
+          id
+        } = this.props.projects[idx]
+        
+        ipcRenderer.send('show-context-menu', {
+          name,
+          cwd,
+          activeXtermId,
+          id
+        })
+      }
+    }, false)
+  }
+
   switchTab = project => {
     // this.props.switchTab(project)
+    console.log('click')
+    // return
 
     this.timer && clearTimeout(this.timer)
 
@@ -123,8 +169,8 @@ class Sidebar extends Component {
         // console.log('switchTab')
         project.xterms
           ? this.props.switchProject(project)
-          // : this.props.asyncLoad(project)
-          : this.props.initProject(project)
+          : this.props.asyncLoad(project)
+          // : this.props.initProject(project)
       }
     }, 300)
   }

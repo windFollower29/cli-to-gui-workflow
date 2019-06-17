@@ -1,16 +1,21 @@
+'use strict'
+
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
+const path = require('path')
 
 const { ipcMain } = require('electron')
+const log = require('electron-log')
+// require('electron-reload')('{./*.js,./js/*.js}')
+require('electron-reload')(path.join(__dirname, 'main.js'), {
+  electron: path.resolve(__dirname, 'node_modules', '.bin', 'electron')
+})
+
+const Index = require('./js/index')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
-
-ipcMain.on('test', (e, arg) => {
-  console.log('main', e)
-  e.returnValue = 'world'
-})
 
 function createWindow () {
   // Create the browser window.
@@ -21,6 +26,8 @@ function createWindow () {
       nodeIntegration: true
     }
   })
+
+  new Index(mainWindow)
 
   // and load the index.html of the app.
   // mainWindow.loadFile('index.html')
