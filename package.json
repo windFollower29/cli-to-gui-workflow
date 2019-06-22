@@ -19,10 +19,25 @@
     "productName": "cli-to-gui-workflow",
     "copyright": "Copyright © 2019 ${author}",
     "mac": {
+      "category": "public.app-category.utilities",
       "icon": "electron/favicon.ico"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     }
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/windFollower29/cli-to-gui-workflow",
   "keywords": [
     "Electron",
     "quick",
