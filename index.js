@@ -1,5 +1,7 @@
 'use strict'
 
+const isDev = require('electron-is-dev')
+
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
@@ -7,9 +9,9 @@ const path = require('path')
 const { ipcMain } = require('electron')
 const log = require('electron-log')
 // require('electron-reload')('{./*.js,./js/*.js}')
-require('electron-reload')(path.join(__dirname, 'main.js'), {
-  electron: path.resolve(__dirname, 'node_modules', '.bin', 'electron')
-})
+// require('electron-reload')(path.join(__dirname, 'main.js'), {
+//   electron: path.resolve(__dirname, 'node_modules', '.bin', 'electron')
+// })
 
 const Index = require('./js/index')
 
@@ -29,12 +31,13 @@ function createWindow () {
 
   new Index(mainWindow)
 
-  // and load the index.html of the app.
-  // mainWindow.loadFile('index.html')
-  mainWindow.loadURL('http://localhost:3000/index.html')
+  // load the index.html of the app.
+  isDev 
+    ? mainWindow.loadURL('http://localhost:3000/index.html')
+    : mainWindow.loadFile(path.join(__dirname, './react/build/index.html'))
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  isDev && mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
