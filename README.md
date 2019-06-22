@@ -1,45 +1,27 @@
-# electron-quick-start
+# a cli-to-gui-workflow Tool
 
-**Clone and run for a quick way to see Electron in action.**
+> 运行环境：`node v8` + electron v4.0 + macOSX v10.13 `目前仅在mac环境下使用，windows环境暂时没运行过`
 
-This is a minimal Electron application based on the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) within the Electron documentation.
+1. 安装electron项目依赖：根目录`npm install`
+2. 安装react项目依赖：react目录下 `npm install`
 
-**Use this app along with the [Electron API Demos](https://electronjs.org/#get-started) app for API code examples to help you get started.**
+## 开发环境下
+3. 运行react项目：react目录下`npm start`
+4. 运行electron：根目录`npm start`
 
-A basic Electron application needs just these files:
+## 生产打包
+3. 打包react：react目录下`npm run build`
+4. 打包electron：根目录下`npm run dist` 或者 `npm run pack`(自测使用)
 
-- `package.json` - Points to the app's main file and lists its details and dependencies.
-- `main.js` - Starts the app and creates a browser window to render HTML. This is the app's **main process**.
-- `index.html` - A web page to render. This is the app's **renderer process**.
+### TODO
+[] 右键菜单支持刷新项目信息
 
-You can learn more about each of these components within the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start).
+[] 换肤
 
-## To Use
+[] redux-saga + redux middleware实现数据持久化
 
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+[] shell终端现场方案：https://github.com/Yomguithereal/react-blessed
 
-```bash
-# Clone this repository
-git clone https://github.com/electron/electron-quick-start
-# Go into the repository
-cd electron-quick-start
-# Install dependencies
-npm install
-# Run the app
-npm start
-```
+[] electron如何优雅地抛出错误
 
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
-
-## Resources for Learning Electron
-
-- [electronjs.org/docs](https://electronjs.org/docs) - all of Electron's documentation
-- [electronjs.org/community#boilerplates](https://electronjs.org/community#boilerplates) - sample starter apps created by the community
-- [electron/electron-quick-start](https://github.com/electron/electron-quick-start) - a very basic starter Electron app
-- [electron/simple-samples](https://github.com/electron/simple-samples) - small applications with ideas for taking them further
-- [electron/electron-api-demos](https://github.com/electron/electron-api-demos) - an Electron app that teaches you how to use Electron
-- [hokein/electron-sample-apps](https://github.com/hokein/electron-sample-apps) - small demo apps for the various Electron APIs
-
-## License
-
-[CC0 1.0 (Public Domain)](LICENSE.md)
+[] electron本地安装程序后如何实现自动更新

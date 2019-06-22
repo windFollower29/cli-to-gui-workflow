@@ -2,7 +2,7 @@
   "name": "electron-quick-start",
   "version": "1.0.0",
   "description": "A minimal Electron application",
-  "main": "index.js",
+  "main": "electron/index.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
@@ -14,11 +14,12 @@
     "dist_both": "electron-builder --wm"
   },
   "build": {
+    "asar": false,
     "appId": "com.winder.app",
     "productName": "cli-to-gui-workflow",
     "copyright": "Copyright © 2019 ${author}",
     "mac": {
-      "icon": "./favicon.ico"
+      "icon": "electron/favicon.ico"
     }
   },
   "repository": "https://github.com/electron/electron-quick-start",

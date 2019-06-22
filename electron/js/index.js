@@ -27,11 +27,11 @@ module.exports = class Index {
   createMenu () {
 
     const template = [
-      {
-        label: '刷新',
-        // type: 'checkbox',
-        click: this.refresh.bind(this)
-      },
+      // {
+      //   label: '刷新',
+      //   // type: 'checkbox',
+      //   click: this.refresh.bind(this)
+      // },
       {
         label: '重命名',
         // type: 'checkbox',

@@ -34,10 +34,11 @@ function createWindow () {
   // load the index.html of the app.
   isDev 
     ? mainWindow.loadURL('http://localhost:3000/index.html')
-    : mainWindow.loadFile(path.join(__dirname, './react/build/index.html'))
+    : mainWindow.loadFile(path.join(__dirname, '../react/build/index.html'))
 
   // Open the DevTools.
-  isDev && mainWindow.webContents.openDevTools()
+  // isDev && 
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
