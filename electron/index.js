@@ -37,7 +37,7 @@ function createWindow () {
     : mainWindow.loadFile(path.join(__dirname, '../react/build/index.html'))
 
   // Open the DevTools.
-  // isDev && 
+  isDev && 
   mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
