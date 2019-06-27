@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
-    "watch": "nodemon --watch . --ignore 'app' --exec \"npm start\"",
+    "watch": "nodemon --watch . --ignore 'react' --exec \"npm start\"",
     "rebuild": "electron-rebuild -f -w node-pty",
     "release": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=build",
     "pack": "electron-builder --dir ",

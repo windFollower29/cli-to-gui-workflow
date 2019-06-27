@@ -22,6 +22,58 @@ module.exports = class Index {
 
     this.initEvent()
     this.createMenu()
+    this.createAppMenu()
+  }
+
+  createAppMenu () {
+
+    const template = [
+      {
+        label: 'Electron',
+        role: 'electron',
+        submenu: [
+          {
+            label: 'Quit',
+            accelerator: 'CmdOrCtrl+Q',
+            role: 'quit',
+            click () {
+              app.quit()
+            }
+          }
+        ]
+      },
+      {
+        label: 'View',
+        role: 'view',
+        submenu: [
+          {
+            label: 'Reload',
+            accelerator: 'CmdOrCtrl+R',
+            role: 'reload',
+            click: (item, focusedWindow) => {
+              if (focusedWindow.id === 1) {
+                BrowserWindow.getAllWindows().forEach(win => {
+                  if (win.id > 1) win.close()
+                })
+              }
+              focusedWindow.reload()
+            }
+          },
+          {
+            label: 'Toggle Developer Tools',
+            accelerator: 'F12',
+            click: (item, focusedWindow) => {
+              if (focusedWindow) {
+                focusedWindow.toggleDevTools()
+              }
+            }
+          }
+        ]
+      }
+    ]
+
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
   }
 
   createMenu () {
