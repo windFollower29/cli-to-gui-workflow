@@ -3,7 +3,8 @@ const {
   BrowserWindow,
   ipcMain,
   Menu,
-  MenuItem
+  MenuItem,
+  dialog
 } = require('electron')
 
 const log = require('electron-log')
@@ -23,6 +24,24 @@ module.exports = class Index {
     this.initEvent()
     this.createMenu()
     this.createAppMenu()
+    this.initDialog()
+  }
+
+  showFileSelector (e) {
+    dialog.showOpenDialog({
+      properties: ['openFile', 'openDirectory']
+    }, files => {
+      log.info('\nfiles: ',files)
+      if (files) {
+        this.win.webContents.send('selected-img', files)
+        // e.sender.send('selected-directory', files)
+      }
+    })
+  }
+
+  initDialog () {
+
+    ipcMain.on('open-file-dialog', this.showFileSelector.bind(this))
   }
 
   createAppMenu () {
@@ -66,6 +85,19 @@ module.exports = class Index {
               if (focusedWindow) {
                 focusedWindow.toggleDevTools()
               }
+            }
+          }
+        ]
+      },
+      {
+        label: 'Tool',
+        role: 'tool',
+        submenu: [
+          {
+            label: 'Set Theme',
+            click: () => {
+              this.showFileSelector()
+              // ipcMain.send('open-file-dialog')
             }
           }
         ]

@@ -26,6 +26,9 @@ function createWindow () {
     height: 600,
     webPreferences: {
       nodeIntegration: true
+    },
+    webPreferences: {
+      webSecurity: false
     }
   })
 
@@ -39,6 +42,7 @@ function createWindow () {
   // Open the DevTools.
   isDev && 
   mainWindow.webContents.openDevTools()
+  // log.info(mainWindow.webContents)
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

@@ -1,6 +1,6 @@
 {
   "name": "electron-quick-start",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A minimal Electron application",
   "main": "electron/index.js",
   "scripts": {
@@ -11,7 +11,8 @@
     "release": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=build",
     "pack": "electron-builder --dir ",
     "dist": "electron-builder --publish always",
-    "dist_both": "electron-builder --wm"
+    "dist_both": "electron-builder -wm",
+    "debug": "DEBUG=electron-builder electron-builder -w"
   },
   "build": {
     "asar": false,
@@ -21,6 +22,29 @@
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "electron/favicon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "electron/favicon.ico",
+      "uninstallerIcon": "electron/favicon.ico",
+      "installerHeaderIcon": "electron/favicon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "electron-builder-start",
+      "include": "build/script/installer.nsh"
+    },
+    "win": {
+      "icon": "electron/favicon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     },
     "dmg": {
       "contents": [

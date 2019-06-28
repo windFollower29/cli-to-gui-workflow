@@ -10,3 +10,5 @@ export const delXterm = 'delXterm'
 
 export const enableEdit = 'enableEdit'
 export const rename = 'rename'
+
+export const SET_THEME = 'setTheme'

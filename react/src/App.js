@@ -1,32 +1,44 @@
-import React from 'react';
 
-import { Provider } from 'react-redux'
-import store from './store/index'
-
-import { PersistGate } from 'redux-persist/integration/react'
-import { persistor } from './store/index'
-
-import './App.css';
-import './style/page.styl'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { setTheme } from './store/actions/theme'
 
 import Layout from './pages/Layout'
 
-function App() {
-  return (
+const { ipcRenderer } = window.require('electron')
 
-    <Provider store={store} >
-      <PersistGate
-        loading={null}
-        persistor={persistor}
+@connect(
+  state => ({
+    theme: state.theme
+  }),
+  dispatch => ({
+    setTheme: (path) => dispatch(setTheme(path))
+  })
+)
+class App extends Component {
+
+  componentDidMount () {
+    ipcRenderer.on('selected-img', (e, files) => {
+      const imgPath = files[0]
+      this.props.setTheme(imgPath)
+    })
+  }
+
+  render () {
+
+    const bgi = this.props.theme
+      ? "url('file://" + this.props.theme + "')"
+      : null
+
+    return (
+
+      <div className="App"
+        style={{ backgroundImage: bgi }}
       >
-        <div className="App">
-
-          <Layout/>
-
-        </div>
-      </PersistGate>
-    </Provider>
-  );
+        <Layout />
+      </div>
+    )
+  }
 }
 
-export default App;
+export default App
