@@ -21,6 +21,12 @@ cache:
   - $HOME/.cache/electron-builder
   - $HOME/.npm/_prebuilds
 
+before_install:
+  - cd react
+
+install:
+  - npm install
+
 script:
   - npm run dist
 
