@@ -6,7 +6,7 @@ export default class FileUpload extends Component {
 
     return (
       <div id="file-upload">
-        <input id="input-upload" type="file"/>
+        {/* <input id="input-upload" type="file"/> */}
         <label htmlFor="input-upload" className="icon-plus">+</label>
       </div>
     )
