@@ -1,6 +1,6 @@
 {
   "name": "electron-quick-start",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A minimal Electron application",
   "main": "electron/index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "pack": "electron-builder --dir ",
     "build_web": "cd react && npm run build",
     "release": "electron-builder --publish onTagOrDraft",
-    "dist": "concurrently \"npm:build_web\" \"npm:release\" ",
+    "dist": "npm run build_web && npm run release",
     "dist_both": "electron-builder -wm",
     "debug": "DEBUG=electron-builder electron-builder -w"
   },
