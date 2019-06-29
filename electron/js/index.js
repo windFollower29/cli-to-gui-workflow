@@ -4,7 +4,8 @@ const {
   ipcMain,
   Menu,
   MenuItem,
-  dialog
+  dialog,
+  shell
 } = require('electron')
 
 const log = require('electron-log')
@@ -51,6 +52,15 @@ module.exports = class Index {
         label: 'Electron',
         role: 'electron',
         submenu: [
+          {
+            label: 'About',
+            click () {
+              shell.openExternal('https://github.com/windFollower29/cli-to-gui-workflow')
+            }
+          },
+          {
+            type: 'separator'
+          },
           {
             label: 'Quit',
             accelerator: 'CmdOrCtrl+Q',

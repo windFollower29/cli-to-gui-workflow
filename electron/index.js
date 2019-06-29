@@ -20,10 +20,12 @@ const Index = require('./js/index')
 let mainWindow
 
 function createWindow () {
+  const { screen } = require('electron')
+  const size = screen.getPrimaryDisplay().size
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: size.height,
     webPreferences: {
       nodeIntegration: true
     },
