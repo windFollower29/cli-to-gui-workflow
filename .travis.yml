@@ -22,10 +22,12 @@ cache:
   - $HOME/.npm/_prebuilds
 
 before_install:
-  - cd react
-
-install:
   - npm install
+  - cd react
+  - npm install
+
+# install:
+#   - npm install
 
 script:
   - cd ../
