@@ -16,7 +16,9 @@ os:
 
 cache:
   directories:
-  # - node_modules
+  # 需更新包时注释掉
+  - node_modules
+  - react/node_modules
   - $HOME/.cache/electron
   - $HOME/.cache/electron-builder
   - $HOME/.npm/_prebuilds
