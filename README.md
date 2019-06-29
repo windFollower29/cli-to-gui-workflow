@@ -6,17 +6,13 @@
 2. 安装react项目依赖：react目录下 `npm install`
 
 ## 开发环境下
-3. 运行react项目：react目录下`npm start`
-4. 运行electron：根目录`npm start`
+1. 运行react项目：react目录下`npm start`
+2. 运行electron：根目录`npm start` 或者 `npm run debug`(改变electron源码自动重启应用)
 
 ## 生产打包
-3. 打包react：react目录下`npm run build`
-4. 打包electron：根目录下`npm run dist` 或者 `npm run pack`(自测使用)
+1. 根目录下`npm run dist`
 
 ### TODO
-[] 右键菜单支持刷新项目信息
-
-[] 换肤
 
 [] redux-saga + redux middleware实现数据持久化
 
