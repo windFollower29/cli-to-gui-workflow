@@ -27,6 +27,7 @@ script:
 branches:
   only:
     - release
+    - /^v.*$/
 
 deploy:
   provider: releases
