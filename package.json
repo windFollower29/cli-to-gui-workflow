@@ -79,7 +79,7 @@
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
     "concurrently": "^4.1.1",
-    "electron": "4.0.1",
+    "electron": "9.4.0",
     "electron-builder": "^20.43.0",
     "electron-packager": "^13.1.1",
     "electron-rebuild": "^1.8.4",
